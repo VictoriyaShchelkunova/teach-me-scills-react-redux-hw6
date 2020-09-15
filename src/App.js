@@ -1,26 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { connect } from 'react-redux';
+import { saveValueAction } from './actions';
+import Component from './components/showValue';
 
-function App() {
+function App({ saveValue, value, warningStatus }) {
+  debugger
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <section>
+      <div>
+        <input type="text" onChange={({ target }) => saveValue(target.value)} />
+        <ul>
+          {value.split('').map((item, index) => <Component key={index} value={item} />)}
+        </ul>
+      </div>
+      {
+        warningStatus ? <span style={{color: 'red'}}>Warning: you delete a char!!!</span> : null
+      }
+    </section>
+
+
   );
 }
+function mapStateToProps(state) {
+  return {
+    value: state.value,
+    warningStatus: state.warningStatus,
+  }
+}
+function mapDispatchToProps(dispatch) {
+  return {
+    saveValue: (value) => dispatch(saveValueAction(value)),
+  }
+}
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
